@@ -97,6 +97,8 @@ def init_session_state():
         st.session_state.user = None
     if 'session_checked' not in st.session_state:
         st.session_state.session_checked = False
+    if 'verification_success' not in st.session_state:
+        st.session_state.verification_success = False
     
     # Check for existing Supabase session on first load
     if not st.session_state.session_checked:
@@ -105,6 +107,10 @@ def init_session_state():
             if session and session.user:
                 st.session_state.authenticated = True
                 st.session_state.user = session.user
+                # Check if user just verified email
+                if session.user.email_confirmed_at and not st.session_state.get('verified_shown', False):
+                    st.session_state.verification_success = True
+                    st.session_state.verified_shown = True
         except Exception as e:
             pass  # No valid session
         st.session_state.session_checked = True
@@ -152,6 +158,11 @@ def sign_out():
 def authentication_ui():
     """Display authentication UI"""
     st.title("🔐 Sleep Disorder Predictor - Login")
+    
+    # Show verification success message if redirected from email
+    if st.session_state.verification_success:
+        st.success("✅ Email verified successfully! You can now log in.")
+        st.session_state.verification_success = False
     
     # Create tabs for different auth methods
     tab1, tab2 = st.tabs(["Login with Password", "Sign Up"])
