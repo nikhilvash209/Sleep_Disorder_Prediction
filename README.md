@@ -6,7 +6,6 @@ This project implements a machine learning model to predict sleep disorders base
 The app now includes **Supabase Authentication** with the following features:
 - **Email & Password Login** - Traditional authentication
 - **Email & Password Sign Up** - Create new accounts with email verification
-- **Email OTP Login** - Passwordless authentication via one-time codes sent to email
 
 Features
 🔒 Secure authentication using Supabase
@@ -88,10 +87,9 @@ streamlit run app.py
 
 ### 3. Authenticate
 
-The app will show a login screen with three tabs:
+The app will show a login screen with two tabs:
 - **Login with Password**: Enter your email and password
 - **Sign Up**: Create a new account (verification email will be sent)
-- **Login with OTP**: Enter your email to receive a one-time code
 
 ### 4. Make Predictions
 
@@ -107,12 +105,6 @@ After successful authentication, you can:
 - Secure password storage via Supabase
 - Email verification on sign up
 
-### Email OTP (One-Time Password)
-- Passwordless authentication
-- OTP sent to your email
-- Valid for a limited time
-- More secure than traditional passwords
-
 Project Structure
 sleep_disorder_train.py: Script to load data, preprocess, train model, and save the model/encoders.
 
@@ -124,5 +116,61 @@ sleepdisordermodel.pkl: Saved model and LabelEncoders file.
 
 requirements.txt: Python dependencies.
 
-Acknowledgments
-This project uses open-source libraries such as scikit-learn and Streamlit for building the machine learning model and web interface.
+## 🔒 Session Persistence
+
+The app now includes **automatic session persistence**:
+- ✅ Stay logged in after page refresh
+- ✅ Secure session management via Supabase
+- ✅ No need to login again unless you logout
+- ✅ Works across browser tabs
+
+## 📱 Converting to Android App
+
+Want to use this as a mobile app? See the comprehensive guide:
+- **[ANDROID_CONVERSION_GUIDE.md](ANDROID_CONVERSION_GUIDE.md)** - Complete instructions for converting to APK
+
+**Quick Options:**
+1. **PWA (Easiest)**: Add to home screen from mobile browser
+2. **Web2APK**: Generate APK using online tools like https://website2apk.online
+3. **Android Studio**: Build native WebView app with full customization
+
+## 🛡️ Security Features
+
+- 🔐 Supabase authentication with email verification
+- 🔑 Secure credential management via environment variables
+- 🔄 Persistent sessions with automatic recovery
+- 🚫 Protected routes (login required for predictions)
+
+## 📁 Project Structure
+
+```
+Sleep_Disorder_Prediction/
+├── app.py                          # Main Streamlit app with auth
+├── requirements.txt                # Python dependencies
+├── .env                           # Supabase credentials (not in git)
+├── .env.example                   # Environment template
+├── .gitignore                     # Git ignore file
+├── setup.bat                      # Windows quick setup script
+├── README.md                      # This file
+├── ANDROID_CONVERSION_GUIDE.md    # Android APK conversion guide
+├── sleepdisordermodel.pkl         # Trained ML model
+└── Sleep_health_and_lifestyle_dataset.csv
+```
+
+## 🚀 Quick Setup
+
+**Windows Users:**
+```cmd
+setup.bat
+```
+
+**Manual Setup:**
+```bash
+pip install -r requirements.txt
+copy .env.example .env
+# Edit .env with your Supabase credentials
+streamlit run app.py
+```
+
+## Acknowledgments
+This project uses open-source libraries such as scikit-learn, Streamlit, and Supabase for building the machine learning model, web interface, and authentication system.

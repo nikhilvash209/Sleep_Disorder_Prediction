@@ -90,17 +90,24 @@ st.set_page_config(page_title="Sleep Disorder Predictor", page_icon="😴")
 # --- Authentication Functions ---
 
 def init_session_state():
-    """Initialize session state variables"""
+    """Initialize session state variables and check for existing session"""
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
     if 'user' not in st.session_state:
         st.session_state.user = None
-    if 'auth_mode' not in st.session_state:
-        st.session_state.auth_mode = 'login'
-    if 'otp_sent' not in st.session_state:
-        st.session_state.otp_sent = False
-    if 'otp_email' not in st.session_state:
-        st.session_state.otp_email = ""
+    if 'session_checked' not in st.session_state:
+        st.session_state.session_checked = False
+    
+    # Check for existing Supabase session on first load
+    if not st.session_state.session_checked:
+        try:
+            session = supabase.auth.get_session()
+            if session and session.user:
+                st.session_state.authenticated = True
+                st.session_state.user = session.user
+        except Exception as e:
+            pass  # No valid session
+        st.session_state.session_checked = True
 
 def sign_up_with_password(email, password):
     """Sign up a new user with email and password"""
@@ -122,37 +129,12 @@ def sign_in_with_password(email, password):
             "email": email,
             "password": password
         })
-        if response.user:
+        if response.user and response.session:
             st.session_state.authenticated = True
             st.session_state.user = response.user
+            # Session is automatically stored by Supabase client
             return True, "Login successful!"
         return False, "Invalid credentials"
-    except Exception as e:
-        return False, f"Error: {str(e)}"
-
-def sign_in_with_otp(email):
-    """Send OTP to email"""
-    try:
-        response = supabase.auth.sign_in_with_otp({
-            "email": email
-        })
-        return True, "OTP sent to your email! Please check your inbox."
-    except Exception as e:
-        return False, f"Error: {str(e)}"
-
-def verify_otp(email, token):
-    """Verify OTP token"""
-    try:
-        response = supabase.auth.verify_otp({
-            "email": email,
-            "token": token,
-            "type": "email"
-        })
-        if response.user:
-            st.session_state.authenticated = True
-            st.session_state.user = response.user
-            return True, "OTP verified successfully!"
-        return False, "Invalid OTP"
     except Exception as e:
         return False, f"Error: {str(e)}"
 
@@ -162,8 +144,7 @@ def sign_out():
         supabase.auth.sign_out()
         st.session_state.authenticated = False
         st.session_state.user = None
-        st.session_state.otp_sent = False
-        st.session_state.otp_email = ""
+        st.session_state.session_checked = False
         st.rerun()
     except Exception as e:
         st.error(f"Error signing out: {str(e)}")
@@ -173,7 +154,7 @@ def authentication_ui():
     st.title("🔐 Sleep Disorder Predictor - Login")
     
     # Create tabs for different auth methods
-    tab1, tab2, tab3 = st.tabs(["Login with Password", "Sign Up", "Login with OTP"])
+    tab1, tab2 = st.tabs(["Login with Password", "Sign Up"])
     
     with tab1:
         st.subheader("Login with Email & Password")
@@ -211,54 +192,6 @@ def authentication_ui():
                         st.error(message)
             else:
                 st.warning("Please fill in all fields")
-    
-    with tab3:
-        st.subheader("Login with Email OTP")
-        
-        if not st.session_state.otp_sent:
-            otp_email = st.text_input("Email", key="otp_email_input")
-            
-            if st.button("Send OTP", key="send_otp_btn"):
-                if otp_email:
-                    success, message = sign_in_with_otp(otp_email)
-                    if success:
-                        st.success(message)
-                        st.session_state.otp_sent = True
-                        st.session_state.otp_email = otp_email
-                        st.rerun()
-                    else:
-                        st.error(message)
-                else:
-                    st.warning("Please enter your email")
-        else:
-            st.info(f"OTP sent to: {st.session_state.otp_email}")
-            otp_token = st.text_input("Enter OTP", key="otp_token")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Verify OTP", key="verify_otp_btn"):
-                    if otp_token:
-                        success, message = verify_otp(st.session_state.otp_email, otp_token)
-                        if success:
-                            st.success(message)
-                            st.rerun()
-                        else:
-                            st.error(message)
-                    else:
-                        st.warning("Please enter the OTP")
-            
-            with col2:
-                if st.button("Resend OTP", key="resend_otp_btn"):
-                    success, message = sign_in_with_otp(st.session_state.otp_email)
-                    if success:
-                        st.success(message)
-                    else:
-                        st.error(message)
-            
-            if st.button("← Back to email input", key="back_to_email"):
-                st.session_state.otp_sent = False
-                st.session_state.otp_email = ""
-                st.rerun()
 
 def encode_input(inputs, label_encoders):
     # Replace "" with default 'unknown' encoding: here 0 for simplicity
