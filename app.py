@@ -8,6 +8,22 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import joblib
 import streamlit as st
+from supabase import create_client, Client
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+# --- Initialize Supabase Client ---
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    st.error("⚠️ Supabase credentials not found. Please set SUPABASE_URL and SUPABASE_KEY in .env file")
+    st.stop()
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- Data Load ---
 df = pd.read_csv('Sleep_health_and_lifestyle_dataset.csv')
@@ -71,6 +87,179 @@ print("Model saved successfully as sleepdisordermodel.pkl")
 
 st.set_page_config(page_title="Sleep Disorder Predictor", page_icon="😴")
 
+# --- Authentication Functions ---
+
+def init_session_state():
+    """Initialize session state variables"""
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    if 'user' not in st.session_state:
+        st.session_state.user = None
+    if 'auth_mode' not in st.session_state:
+        st.session_state.auth_mode = 'login'
+    if 'otp_sent' not in st.session_state:
+        st.session_state.otp_sent = False
+    if 'otp_email' not in st.session_state:
+        st.session_state.otp_email = ""
+
+def sign_up_with_password(email, password):
+    """Sign up a new user with email and password"""
+    try:
+        response = supabase.auth.sign_up({
+            "email": email,
+            "password": password
+        })
+        if response.user:
+            return True, "Account created successfully! Please check your email to verify your account."
+        return False, "Sign up failed. Please try again."
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+def sign_in_with_password(email, password):
+    """Sign in with email and password"""
+    try:
+        response = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
+        if response.user:
+            st.session_state.authenticated = True
+            st.session_state.user = response.user
+            return True, "Login successful!"
+        return False, "Invalid credentials"
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+def sign_in_with_otp(email):
+    """Send OTP to email"""
+    try:
+        response = supabase.auth.sign_in_with_otp({
+            "email": email
+        })
+        return True, "OTP sent to your email! Please check your inbox."
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+def verify_otp(email, token):
+    """Verify OTP token"""
+    try:
+        response = supabase.auth.verify_otp({
+            "email": email,
+            "token": token,
+            "type": "email"
+        })
+        if response.user:
+            st.session_state.authenticated = True
+            st.session_state.user = response.user
+            return True, "OTP verified successfully!"
+        return False, "Invalid OTP"
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+def sign_out():
+    """Sign out the current user"""
+    try:
+        supabase.auth.sign_out()
+        st.session_state.authenticated = False
+        st.session_state.user = None
+        st.session_state.otp_sent = False
+        st.session_state.otp_email = ""
+        st.rerun()
+    except Exception as e:
+        st.error(f"Error signing out: {str(e)}")
+
+def authentication_ui():
+    """Display authentication UI"""
+    st.title("🔐 Sleep Disorder Predictor - Login")
+    
+    # Create tabs for different auth methods
+    tab1, tab2, tab3 = st.tabs(["Login with Password", "Sign Up", "Login with OTP"])
+    
+    with tab1:
+        st.subheader("Login with Email & Password")
+        email = st.text_input("Email", key="login_email")
+        password = st.text_input("Password", type="password", key="login_password")
+        
+        if st.button("Login", key="login_btn"):
+            if email and password:
+                success, message = sign_in_with_password(email, password)
+                if success:
+                    st.success(message)
+                    st.rerun()
+                else:
+                    st.error(message)
+            else:
+                st.warning("Please enter both email and password")
+    
+    with tab2:
+        st.subheader("Create New Account")
+        signup_email = st.text_input("Email", key="signup_email")
+        signup_password = st.text_input("Password", type="password", key="signup_password")
+        signup_password_confirm = st.text_input("Confirm Password", type="password", key="signup_password_confirm")
+        
+        if st.button("Sign Up", key="signup_btn"):
+            if signup_email and signup_password and signup_password_confirm:
+                if signup_password != signup_password_confirm:
+                    st.error("Passwords do not match!")
+                elif len(signup_password) < 6:
+                    st.error("Password must be at least 6 characters long")
+                else:
+                    success, message = sign_up_with_password(signup_email, signup_password)
+                    if success:
+                        st.success(message)
+                    else:
+                        st.error(message)
+            else:
+                st.warning("Please fill in all fields")
+    
+    with tab3:
+        st.subheader("Login with Email OTP")
+        
+        if not st.session_state.otp_sent:
+            otp_email = st.text_input("Email", key="otp_email_input")
+            
+            if st.button("Send OTP", key="send_otp_btn"):
+                if otp_email:
+                    success, message = sign_in_with_otp(otp_email)
+                    if success:
+                        st.success(message)
+                        st.session_state.otp_sent = True
+                        st.session_state.otp_email = otp_email
+                        st.rerun()
+                    else:
+                        st.error(message)
+                else:
+                    st.warning("Please enter your email")
+        else:
+            st.info(f"OTP sent to: {st.session_state.otp_email}")
+            otp_token = st.text_input("Enter OTP", key="otp_token")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Verify OTP", key="verify_otp_btn"):
+                    if otp_token:
+                        success, message = verify_otp(st.session_state.otp_email, otp_token)
+                        if success:
+                            st.success(message)
+                            st.rerun()
+                        else:
+                            st.error(message)
+                    else:
+                        st.warning("Please enter the OTP")
+            
+            with col2:
+                if st.button("Resend OTP", key="resend_otp_btn"):
+                    success, message = sign_in_with_otp(st.session_state.otp_email)
+                    if success:
+                        st.success(message)
+                    else:
+                        st.error(message)
+            
+            if st.button("← Back to email input", key="back_to_email"):
+                st.session_state.otp_sent = False
+                st.session_state.otp_email = ""
+                st.rerun()
+
 def encode_input(inputs, label_encoders):
     # Replace "" with default 'unknown' encoding: here 0 for simplicity
     for col, le in label_encoders.items():
@@ -83,7 +272,17 @@ def encode_input(inputs, label_encoders):
     return inputs
 
 def sleep_disorder_prediction_ui():
-    st.title("Sleep Disorder Prediction")
+    # Display user info and logout button
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.title("Sleep Disorder Prediction")
+        if st.session_state.user:
+            st.caption(f"👤 Logged in as: {st.session_state.user.email}")
+    with col2:
+        if st.button("Logout", key="logout_btn"):
+            sign_out()
+    
+    st.markdown("---")
 
     gender = st.selectbox("Gender", ["Select Gender"] + list(label_encoders['Gender'].classes_), index=0)
     age = st.slider("Age", 10, 100, 30)
@@ -123,4 +322,11 @@ def sleep_disorder_prediction_ui():
         st.success(f"Predicted Sleep Disorder: {pred_label}")
 
 if __name__ == "__main__":
-    sleep_disorder_prediction_ui()
+    # Initialize session state
+    init_session_state()
+    
+    # Check authentication status
+    if not st.session_state.authenticated:
+        authentication_ui()
+    else:
+        sleep_disorder_prediction_ui()
