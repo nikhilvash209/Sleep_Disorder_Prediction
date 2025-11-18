@@ -6,13 +6,10 @@ scikit-learn
 streamlit
 joblib
 jupyter
-<<<<<<< HEAD
 fastapi
 uvicorn[standard]
 pydantic
-gunicorn          
-python-multipart 
-=======
+gunicorn
+python-multipart
 supabase
 python-dotenv
->>>>>>> 31b1cc1c9de3b4f745166547bf0cce25637ac849
