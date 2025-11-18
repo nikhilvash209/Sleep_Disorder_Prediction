@@ -6,3 +6,8 @@ scikit-learn
 streamlit
 joblib
 jupyter
+fastapi
+uvicorn[standard]
+pydantic
+gunicorn          
+python-multipart 

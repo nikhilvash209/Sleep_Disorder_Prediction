@@ -1,61 +1,218 @@
-Sleep Disorder Prediction Model
+# Sleep Disorder Prediction Model
+
 This project implements a machine learning model to predict sleep disorders based on health and lifestyle data. The predictive model is built using a Decision Tree classifier trained on a comprehensive sleep health dataset.
 
-Features
-User-friendly Streamlit web interface for inputting health and lifestyle parameters.
+## 🌟 Features
 
-Uses real-world data with features including age, gender, occupation, sleep duration, physical activity, stress level, BMI category, heart rate, blood pressure, and daily steps.
+- **Streamlit Web Interface**: User-friendly interface for testing predictions
+- **FastAPI REST API**: Production-ready API for mobile/web app integration
+- **Android Integration**: Complete example code for native Android apps
+- **Robust ML Model**: Decision Tree classifier with comprehensive evaluation
+- **Cloud Deployment Ready**: Configuration files for Render, Railway, and Back4App
+- **Real-world Data**: Features include age, gender, occupation, sleep duration, physical activity, stress level, BMI category, heart rate, blood pressure, and daily steps
 
-Preprocessing steps including label encoding of categorical variables.
+## 📊 Predicted Conditions
 
-Robust Decision Tree classifier with model evaluation metrics.
+- **None** - No sleep disorder detected
+- **Sleep Apnea** - Breathing interruptions during sleep
+- **Insomnia** - Difficulty falling or staying asleep
 
-Predicts sleep disorders such as Sleep Apnea and others.
+## 🚀 Quick Start
 
-Model and encoders saved for efficient deployment.
+### Option 1: Streamlit Web App (Testing)
 
-Installation
-Clone the repository.
-
-Ensure Python 3.8+ is installed.
-
-Install dependencies:
-
-bash
+```bash
+# Install dependencies
 pip install -r requirements.txt
-The requirements.txt should include at least:
 
-text
-pandas
-numpy
-scikit-learn
-seaborn
-matplotlib
-joblib
-streamlit
-Usage
-Place the dataset Sleephealthandlifestyledataset.csv in the project directory.
-
-Run the training script to train and save the model (optional if model is already saved):
-
-bash
-python sleep_disorder_train.py
-Run the Streamlit app to interact with the model via a web UI:
-
-bash
+# Run Streamlit app
 streamlit run app.py
-Input your health and lifestyle data on the web interface and click Predict Sleep Disorder to view predictions.
+```
 
-Project Structure
-sleep_disorder_train.py: Script to load data, preprocess, train model, and save the model/encoders.
+### Option 2: FastAPI REST API (Production)
 
-app.py: Streamlit app script to provide a user interface for prediction.
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-Sleephealthandlifestyledataset.csv: Dataset file (not included in repo).
+# Run API server
+python api.py
 
-sleepdisordermodel.pkl: Saved model and LabelEncoders file.
+# Test the API
+python test_api.py
+```
 
-requirements.txt: Python dependencies.
+Visit http://localhost:8000/docs for interactive API documentation.
 
-Acknowledgments
-This project uses open-source libraries such as scikit-learn and Streamlit for building the machine learning model and web interface.
+## 📱 Android Integration
+
+This project includes complete Android integration with Retrofit. See:
+- `AndroidIntegration.kt` - Complete Android code with Retrofit
+- `android_layout_example.xml` - Example UI layout
+- `API_README.md` - Detailed API documentation
+
+## 🌐 Deployment
+
+### Deploy to Render (Recommended - Free)
+
+```bash
+# Push to GitHub
+git init
+git add .
+git commit -m "Initial commit"
+git push -u origin main
+
+# On Render.com:
+# 1. New Web Service
+# 2. Connect GitHub repo
+# 3. Auto-deploy
+```
+
+See `QUICKSTART.md` for detailed deployment instructions.
+
+## 📁 Project Structure
+
+```
+├── app.py                          # Streamlit web interface
+├── api.py                          # FastAPI REST API
+├── sleep_prediction.ipynb          # Model training notebook
+├── sleepdisordermodel.pkl          # Trained model file
+├── Sleep_health_and_lifestyle_dataset.csv  # Training data
+├── requirements.txt                # Python dependencies
+├── test_api.py                     # API testing script
+├── Procfile                        # Render deployment config
+├── runtime.txt                     # Python version specification
+├── .gitignore                      # Git ignore rules
+├── README.md                       # This file
+├── API_README.md                   # Complete API documentation
+├── QUICKSTART.md                   # Quick deployment guide
+├── SETUP_SUMMARY.md                # Setup summary and checklist
+├── AndroidIntegration.kt           # Android code examples
+└── android_layout_example.xml      # Android UI layout
+```
+
+## 🛠️ Technology Stack
+
+### Machine Learning
+- **scikit-learn** - Decision Tree Classifier
+- **pandas** - Data manipulation
+- **numpy** - Numerical computing
+- **joblib** - Model serialization
+
+### Backend
+- **FastAPI** - Modern API framework
+- **Uvicorn** - ASGI server
+- **Pydantic** - Data validation
+- **Streamlit** - Web interface
+
+### Android (Example Code Provided)
+- **Retrofit** - HTTP client
+- **Kotlin Coroutines** - Async operations
+- **ViewModel & LiveData** - Architecture components
+
+## 📖 API Endpoints
+
+### Health Check
+```
+GET /
+```
+Returns API status and version
+
+### Get Options
+```
+GET /api/options
+```
+Returns valid values for dropdowns (gender, occupation, BMI, etc.)
+
+### Predict Sleep Disorder
+```
+POST /api/predict
+```
+Request body:
+```json
+{
+  "gender": "Male",
+  "age": 30,
+  "occupation": "Software Engineer",
+  "sleep_duration": 7.5,
+  "quality_of_sleep": 8,
+  "physical_activity_level": 6,
+  "stress_level": 5,
+  "bmi_category": "Normal",
+  "heart_rate": 75,
+  "daily_steps": 8000,
+  "systolic_bp": 120,
+  "diastolic_bp": 80
+}
+```
+
+Response:
+```json
+{
+  "prediction": "None",
+  "confidence": 95.67,
+  "message": "No sleep disorder detected. Maintain healthy lifestyle habits!"
+}
+```
+
+## 🧪 Testing
+
+### Test API Locally
+```bash
+python test_api.py
+```
+
+### Test with curl
+```bash
+curl http://localhost:8000/
+curl http://localhost:8000/api/options
+curl -X POST http://localhost:8000/api/predict -H "Content-Type: application/json" -d '{"gender":"Male","age":30,...}'
+```
+
+### Interactive Testing
+Visit http://localhost:8000/docs for Swagger UI
+
+## 📚 Documentation
+
+- **`API_README.md`** - Complete API documentation with Android integration guide
+- **`QUICKSTART.md`** - Quick deployment guide for Render, Railway, and Back4App
+- **`SETUP_SUMMARY.md`** - Complete setup summary and troubleshooting
+- **`AndroidIntegration.kt`** - Full Android implementation example
+- **`android_layout_example.xml`** - Android UI layout example
+
+## 🔒 Security Considerations
+
+For production deployment:
+- Add authentication (API keys, JWT tokens)
+- Enable rate limiting
+- Use HTTPS only
+- Restrict CORS to specific domains
+- Implement input sanitization
+- Monitor API usage and errors
+
+## 💡 Use Cases
+
+1. **Mobile Health Apps** - Integrate prediction into fitness/health tracking apps
+2. **Clinical Tools** - Screening tool for healthcare professionals
+3. **Wellness Platforms** - Add sleep disorder assessment to wellness programs
+4. **Research** - Collect and analyze sleep health data
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+- Improve documentation
+
+## 📄 License
+
+This project is for educational purposes.
+
+## 🎓 Acknowledgments
+
+This project uses open-source libraries including:
+- scikit-learn for machine learning
+- FastAPI for the REST API
+- Streamlit for the web interface
+- Retrofit for Android integration examples

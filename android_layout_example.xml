@@ -1,0 +1,335 @@
+<!-- 
+Android XML Layout Example for Sleep Disorder Prediction App
+Place this in: app/src/main/res/layout/activity_main.xml
+-->
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sleep Disorder Prediction"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:textColor="@android:color/black"/>
+
+        <!-- Gender -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerGender"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="8dp"/>
+
+        <!-- Age -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Age"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Enter age"
+            android:inputType="number"
+            android:padding="8dp"/>
+
+        <!-- Occupation -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Occupation"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerOccupation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="8dp"/>
+
+        <!-- Sleep Duration -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sleep Duration (hours)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etSleepDuration"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., 7.5"
+            android:inputType="numberDecimal"
+            android:padding="8dp"/>
+
+        <!-- Quality of Sleep -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quality of Sleep (1-10)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/seekBarSleepQuality"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="10"
+                android:progress="5"/>
+
+            <TextView
+                android:id="@+id/tvSleepQuality"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Physical Activity Level -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Physical Activity Level (1-10)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/seekBarActivity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="10"
+                android:progress="5"/>
+
+            <TextView
+                android:id="@+id/tvActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Stress Level -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stress Level (1-10)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/seekBarStress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="10"
+                android:progress="5"/>
+
+            <TextView
+                android:id="@+id/tvStress"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- BMI Category -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BMI Category"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerBmi"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="8dp"/>
+
+        <!-- Heart Rate -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Heart Rate (bpm)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etHeartRate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., 75"
+            android:inputType="number"
+            android:padding="8dp"/>
+
+        <!-- Daily Steps -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily Steps"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etDailySteps"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., 8000"
+            android:inputType="number"
+            android:padding="8dp"/>
+
+        <!-- Systolic Blood Pressure -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Systolic Blood Pressure (mmHg)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etSystolic"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., 120"
+            android:inputType="number"
+            android:padding="8dp"/>
+
+        <!-- Diastolic Blood Pressure -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Diastolic Blood Pressure (mmHg)"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etDiastolic"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., 80"
+            android:inputType="number"
+            android:padding="8dp"/>
+
+        <!-- Predict Button -->
+        <Button
+            android:id="@+id/btnPredict"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="24dp"
+            android:text="Predict Sleep Disorder"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <!-- Result Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#E3F2FD">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Prediction Result"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/tvPrediction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Prediction: -"
+                    android:textSize="16sp"
+                    android:paddingTop="8dp"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/tvConfidence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confidence: -"
+                    android:textSize="16sp"
+                    android:paddingTop="4dp"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/tvMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Message: -"
+                    android:textSize="14sp"
+                    android:paddingTop="8dp"
+                    android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</ScrollView>
